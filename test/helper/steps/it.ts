@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as fs from "fs";
+import * as fs from "../../../src/lib/fs";
 import { Uri, window } from "vscode";
 import { Command } from "../../../src/command";
 import { editorFile1, targetFile } from "../environment";
@@ -16,7 +16,7 @@ export const it: Step = {
         return async () => {
             await subject.execute(uri);
             const message = `${targetFile} does not exist`;
-            expect(fs.existsSync(targetFile.fsPath), message).to.be.true;
+            expect(await fs.exists(targetFile), message).to.be.true;
         };
     },
     "should prompt for file destination"(subject: Command, prompt: string): FuncVoid {

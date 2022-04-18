@@ -1,5 +1,6 @@
 import * as path from "path";
 import { Uri, workspace, WorkspaceEdit } from "vscode";
+import { exists } from "./lib/fs";
 
 function assertTargetPath(targetPath: Uri | undefined): asserts targetPath is Uri {
     if (targetPath === undefined) {
@@ -28,18 +29,6 @@ export class FileItem {
 
     get targetPath(): Uri | undefined {
         return this.TargetPath;
-    }
-
-    get exists(): boolean {
-        if (this.targetPath === undefined) {
-            return false;
-        }
-        try {
-            workspace.fs.stat(this.targetPath);
-            return true;
-        } catch (e) {
-            return false;
-        }
     }
 
     get isDir(): boolean {
@@ -75,7 +64,7 @@ export class FileItem {
     public async create(mkDir?: boolean): Promise<FileItem> {
         assertTargetPath(this.targetPath);
 
-        if (this.exists) {
+        if (await exists(this.targetPath)) {
             await workspace.fs.delete(this.targetPath, { recursive: true });
         }
 

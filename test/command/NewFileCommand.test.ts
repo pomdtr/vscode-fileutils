@@ -1,9 +1,9 @@
 import { expect } from "chai";
-import * as fs from "fs";
 import * as path from "path";
-import { Uri, window, workspace, WorkspaceFolder } from "vscode";
+import { FileType, Uri, window, workspace, WorkspaceFolder } from "vscode";
 import { NewFileCommand } from "../../src/command";
 import { NewFileController } from "../../src/controller";
+import * as fs from "../../src/lib/fs";
 import * as helper from "../helper";
 
 describe(NewFileCommand.name, () => {
@@ -82,7 +82,7 @@ describe(NewFileCommand.name, () => {
         it("should create the file at destination", async () => {
             await subject.execute();
             const message = `${helper.targetFile.path} does not exist`;
-            expect(fs.existsSync(helper.targetFile.fsPath), message).to.be.true;
+            expect(await fs.exists(helper.targetFile), message).to.be.true;
         });
 
         describe("file path ends with path separator", () => {
@@ -94,7 +94,7 @@ describe(NewFileCommand.name, () => {
             it("should create the directory at destination", async () => {
                 await subject.execute();
                 const message = `${helper.targetFile.path} must be a directory`;
-                expect(fs.statSync(helper.targetFile.fsPath).isDirectory(), message).to.be.true;
+                expect((await workspace.fs.stat(helper.targetFile)).type, message).to.equal(FileType.Directory);
             });
         });
 
@@ -107,7 +107,7 @@ describe(NewFileCommand.name, () => {
             it("should create the file at destination", async () => {
                 await subject.execute();
                 const message = `${helper.targetFileWithDot.path} does not exist`;
-                expect(fs.existsSync(helper.targetFileWithDot.fsPath), message).to.be.true;
+                expect(await fs.exists(helper.targetFileWithDot), message).to.be.true;
             });
         });
 

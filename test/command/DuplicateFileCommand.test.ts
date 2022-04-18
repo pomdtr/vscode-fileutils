@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as path from "path";
-import * as fs from "fs";
+import * as fs from "../../src/lib/fs";
 import { Uri, window, workspace } from "vscode";
 import { DuplicateFileCommand } from "../../src/command/DuplicateFileCommand";
 import { DuplicateFileController } from "../../src/controller";
@@ -74,7 +74,7 @@ describe(DuplicateFileCommand.name, () => {
             it("should duplicate current file to destination", async () => {
                 await subject.execute(sourceDirectory);
                 const message = `${targetDirectory} does not exist`;
-                expect(fs.existsSync(targetDirectory.fsPath), message).to.be.true;
+                expect(await fs.exists(targetDirectory), message).to.be.true;
             });
 
             it("should not open target file as active editor", async () => {

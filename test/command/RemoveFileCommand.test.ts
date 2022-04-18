@@ -1,10 +1,10 @@
 import { expect } from "chai";
-import * as fs from "fs";
 import * as path from "path";
 import { window } from "vscode";
 import { RemoveFileCommand } from "../../src/command";
 import { RemoveFileController } from "../../src/controller";
 import * as helper from "../helper";
+import * as fs from "../../src/lib/fs";
 
 describe(RemoveFileCommand.name, () => {
     const subject = new RemoveFileCommand(new RemoveFileController(helper.createExtensionContext()));
@@ -51,7 +51,7 @@ describe(RemoveFileCommand.name, () => {
                         await subject.execute();
                         const message = `${helper.editorFile1.path} does not exist`;
                         expect(window.showInformationMessage).to.have.not.been.called;
-                        expect(fs.existsSync(helper.editorFile1.fsPath), message).to.be.false;
+                        expect(await fs.exists(helper.editorFile1), message).to.be.false;
                     });
                 });
             });
@@ -60,7 +60,7 @@ describe(RemoveFileCommand.name, () => {
                 it("should delete the file", async () => {
                     await subject.execute();
                     const message = `${helper.editorFile1.path} does exist`;
-                    expect(fs.existsSync(helper.editorFile1.fsPath), message).to.be.false;
+                    expect(await fs.exists(helper.editorFile1), message).to.be.false;
                 });
             });
 
@@ -76,7 +76,7 @@ describe(RemoveFileCommand.name, () => {
                         expect.fail("Must fail");
                     } catch (e) {
                         const message = `${helper.editorFile1.path} does not exist`;
-                        expect(fs.existsSync(helper.editorFile1.fsPath), message).to.be.true;
+                        expect(fs.exists(helper.editorFile1), message).to.be.true;
                     }
                 });
             });
@@ -89,7 +89,7 @@ describe(RemoveFileCommand.name, () => {
                 it("should delete the file without confirmation", async () => {
                     await subject.execute(helper.editorFile2);
                     const message = `${helper.editorFile2.path} does not exist`;
-                    expect(fs.existsSync(helper.editorFile2.fsPath), message).to.be.false;
+                    expect(await fs.exists(helper.editorFile2), message).to.be.false;
                 });
             });
         });
