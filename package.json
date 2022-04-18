@@ -43,7 +43,7 @@
     "onCommand:fileutils.newFolderAtRoot",
     "onCommand:fileutils.copyFileName"
   ],
-  "main": "./out/main",
+  "browser": "./out/extension.js",
   "contributes": {
     "commands": [
       {
@@ -174,9 +174,8 @@
   },
   "scripts": {
     "vscode:prepublish": "yarn run build:compile:prod",
-    "build:compile:prod": "tsc -p tsconfig.build.json",
-    "build:compile:dev": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "build:compile:prod": "webpack --mode=production",
+    "build:compile:dev": "webpack --mode=development",
     "pretest": "yarn run build:compile:dev",
     "test": "node ./out/test/runTest.js",
     "lint": "eslint './{src,test}/**/*.ts'",
@@ -212,15 +211,19 @@
     "semantic-release-vsce": "5.0.10",
     "sinon": "9.2.4",
     "sinon-chai": "3.7.0",
+    "ts-loader": "^9.2.8",
     "typescript": "4.6.3",
-    "vscode-test": "1.6.1"
+    "vscode-test": "1.6.1",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "brace-expansion": "2.0.1"
+    "brace-expansion": "2.0.1",
+    "path-browserify": "^1.0.1"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run lint && yarm run test"
+      "pre-commit": "yarn run lint && yarn run test"
     }
   }
 }

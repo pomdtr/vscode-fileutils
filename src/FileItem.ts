@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import * as path from "path";
 import { Uri, workspace, WorkspaceEdit } from "vscode";
 
@@ -35,7 +34,12 @@ export class FileItem {
         if (this.targetPath === undefined) {
             return false;
         }
-        return fs.existsSync(this.targetPath.fsPath);
+        try {
+            workspace.fs.stat(this.targetPath);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     get isDir(): boolean {
